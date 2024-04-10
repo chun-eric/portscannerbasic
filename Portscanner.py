@@ -1,24 +1,80 @@
-# Basic Port Scanner
-from scapy.all import *
+import pyfiglet
+import socket
+import sys
+from datetime import datetime
 
-ports = [22,25,80,53,443,445,8080,8443]
+# create the Port Scanner in pyfiglet
+ascii_banner = pyfiglet.figlet_format("Port Scanner")
+print(ascii_banner)
 
-def SynScan(host):
-  ans,unans = sr(IP(dst=host)/TCP(dport=ports,flags="S"), timeout=2,verbose=0)
-  print("Open ports at %s" % host)
-  for (s, r) in ans:
-    if s.haslayer(TCP) and r.haslayer(TCP):
-      if s[TCP].dport == r[TCP].sport:
-        print(s[TCP].dport)
+# Ask for target input IP address
+target = input(str("Target IP: "))
+
+# target IP validation check
+if target < 1 or target > 65535:
+  print("Invalid port range.")
+  sys.exit()
+
+# some extra features
+# Specify a range of ports to scan
+# start_port = int(input("Enter the starting port: "))
+# end_port = int(input("Enter the ending port: "))
+
+# Add a check for valid port range
+# if start_port < 1 or end_port > 65535 or start_port > end_port:
+#   print("Invalid port range.")
+#   sys.exit()
+
+# # Add a counter for open ports
+# open_ports = []
+
+# Scan ports within the specified range
+for port in range(start_port, end_port + 1):
+  s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+  socket.setdefaulttimeout(1)
+  result = s.connect_ex((target, port))
+
+  # If port is open, add it to the list of open ports
+  if result == 0:
+    # open_ports.append(port)
+    print("Port {} is open".format(port))
+  s.close()
 
 
-def DNSScan(host):
-  ans,unans = sr(IP(dst=host)/UDP(dport=53)/DNS(rd=1,qd=DNSQR(qname="google.com")),timeout=2, verbose=0)
-  if ans:
-    print("DNS Server at %s" % host)
 
+# # Print the list of open ports
+# if open_ports:
+#   print("Open ports: ", open_ports)
+# else:
+#   print("No open ports found.")
 
-host = "8.8.8.8"
+# Add a pretty banner
+print("_" * 50)
+print("Scanning target " + target)
+print("Time started: " + str(datetime.now()))
+print("_" * 50)
 
-SynScan(host)
-DNSScan(host)
+try:
+  # Scan ports between 1 and 65,535
+  for port in range(1,65535):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    socket.setdefaulttimeout(1)
+    result = s.connect_ex((target,port))
+
+    # If port is open, print it
+    if result == 0:
+      print("Port {} is open".format(port))
+    s.close()
+
+# exception handling
+except KeyboardInterrupt:
+  print("\nExit program.")
+  sys.exit()
+
+except socket.gaierror:
+  print("\nHostname could not be resolved.")
+  sys.exit()
+
+except socket.error:
+  print("\nServer not responding.")
+  sys.exit()
