@@ -4,4 +4,7 @@ This is a basic port scanner python script that can quickly run on a target mach
 There are many great open source port scanners like nmap, but we can create our own little 
 basic version to quickly find out what the open ports are on your local machine. 
 
-It
+This script is purely for educational purposes. 
+Scanning other machine's ports without consent/permssion is illegal.
+
+Use with caution.
