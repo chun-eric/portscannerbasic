@@ -11,9 +11,9 @@ print(ascii_banner)
 target = input(str("Target IP: "))
 
 # target IP validation check
-if target < 1 or target > 65535:
-  print("Invalid port range.")
-  sys.exit()
+# if target < 1 or target > 65535:
+#   print("Invalid port range.")
+#   sys.exit()
 
 # some extra features
 # Specify a range of ports to scan
@@ -29,7 +29,7 @@ if target < 1 or target > 65535:
 # open_ports = []
 
 # Scan ports within the specified range
-for port in range(start_port, end_port + 1):
+for port in range(1, 65535):
   s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   socket.setdefaulttimeout(1)
   result = s.connect_ex((target, port))
@@ -65,6 +65,7 @@ try:
     if result == 0:
       print("Port {} is open".format(port))
     s.close()
+
 
 # exception handling
 except KeyboardInterrupt:
